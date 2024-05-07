@@ -69,11 +69,11 @@ export default class GamePlay {
    * @param positions array of PositionedCharacter objects
    */
   redrawPositions(positions) {
-    for (const cell of this.cells) {
-      cell.innerHTML = '';
+    for (let cellIndex = 0; cellIndex < this.cells.length; cellIndex += 1) {
+      this.cells[cellIndex].innerHTML = '';
     }
 
-    for (const position of positions) {
+    positions.forEach((position) => {
       const cellEl = this.boardEl.children[position.position];
       const charEl = document.createElement('div');
       charEl.classList.add('character', position.character.type);
@@ -88,7 +88,7 @@ export default class GamePlay {
 
       charEl.appendChild(healthEl);
       cellEl.appendChild(charEl);
-    }
+    });
   }
 
   /**
