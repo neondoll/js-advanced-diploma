@@ -1,4 +1,5 @@
 import Team from './Team';
+import { getRandomInt } from './utils';
 
 /**
  * Формирует экземпляр персонажа из массива allowedTypes со
@@ -13,8 +14,8 @@ import Team from './Team';
 export function* characterGenerator(allowedTypes, maxLevel) {
   // TODO: write logic here
   while (true) {
-    const CharacterClass = allowedTypes[Math.random() * allowedTypes.length];
-    const characterLevel = (Math.random() * maxLevel) + 1;
+    const CharacterClass = allowedTypes[getRandomInt(allowedTypes.length)];
+    const characterLevel = getRandomInt(maxLevel) + 1;
 
     yield new CharacterClass(characterLevel);
   }

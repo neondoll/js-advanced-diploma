@@ -64,3 +64,7 @@ export function calcHealthLevel(health) {
 
   return 'high';
 }
+
+export function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
