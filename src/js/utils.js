@@ -2,7 +2,7 @@
  * @todo
  * @param index - индекс поля
  * @param boardSize - размер квадратного поля (в длину или ширину)
- * @returns строка - тип ячейки на поле:
+ * @returns string - тип ячейки на поле:
  *
  * top-left
  * top-right
@@ -24,7 +24,33 @@
  * */
 export function calcTileType(index, boardSize) {
   // TODO: ваш код будет тут
-  return 'center';
+  const indexes = {
+    'bottom-left': boardSize * (boardSize - 1),
+    'bottom-right': (boardSize * boardSize) - 1,
+    'top-left': 0,
+    'top-right': boardSize - 1,
+  };
+
+  switch (true) {
+  case index === indexes['top-left']:
+    return 'top-left';
+  case index === indexes['top-right']:
+    return 'top-right';
+  case index > indexes['top-left'] && index < indexes['top-right']:
+    return 'top';
+  case index === indexes['bottom-left']:
+    return 'bottom-left';
+  case index === indexes['bottom-right']:
+    return 'bottom-right';
+  case index > indexes['bottom-left'] && index < indexes['bottom-right']:
+    return 'bottom';
+  case index % boardSize === indexes['top-right']:
+    return 'right';
+  case index % boardSize === indexes['top-left']:
+    return 'left';
+  default:
+    return 'center';
+  }
 }
 
 export function calcHealthLevel(health) {
