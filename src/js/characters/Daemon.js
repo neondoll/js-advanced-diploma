@@ -3,6 +3,7 @@ import characterTypes from '../characterTypes';
 
 /**
  * Класс соперника Daemon (Демон)
+ *
  * @property level - уровень персонажа, от 1 до 4
  */
 export default class Daemon extends Character {

@@ -3,6 +3,7 @@ import characterTypes from '../characterTypes';
 
 /**
  * Класс игрока Swordsman (Мечник)
+ *
  * @property level - уровень персонажа, от 1 до 4
  */
 export default class Swordsman extends Character {

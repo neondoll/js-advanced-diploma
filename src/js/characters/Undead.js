@@ -3,6 +3,7 @@ import characterTypes from '../characterTypes';
 
 /**
  * Класс соперника Undead (Восставший из мёртвых)
+ *
  * @property level - уровень персонажа, от 1 до 4
  */
 export default class Undead extends Character {
