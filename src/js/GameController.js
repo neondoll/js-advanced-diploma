@@ -1,3 +1,5 @@
+import themes from './themes';
+
 export default class GameController {
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
@@ -5,8 +7,10 @@ export default class GameController {
   }
 
   init() {
-    // TODO: add event listeners to gamePlay events
-    // TODO: load saved stated from stateService
+    // TODO: add event listeners to gamePlay events (добавить прослушиватели событий в события gamePlay)
+    this.gamePlay.drawUi(themes.prairie);
+
+    // TODO: load saved stated from stateService (загрузка сохранена, указанная в StateService)
   }
 
   onCellClick(index) {
