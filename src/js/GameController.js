@@ -1,4 +1,6 @@
+import cursors from './cursors';
 import GamePlay from './GamePlay';
+import GameState from './GameState';
 import PositionedCharacter from './PositionedCharacter';
 import themes from './themes';
 import {
@@ -6,7 +8,6 @@ import {
 } from './characters';
 import { generateTeam } from './generators';
 import { getRandomInt } from './utils';
-import GameState from './GameState';
 
 export default class GameController {
   constructor(gamePlay, stateService) {
@@ -14,6 +15,19 @@ export default class GameController {
     this.stateService = stateService;
 
     this.positionedCharacters = [];
+
+    /**
+     * `writable: false`     - запретить присвоение
+     * `configurable: false` - запретить удаление
+     */
+    Object.defineProperties(this, {
+      ourCharacterTypes: {
+        value: [Bowman, Magician, Swordsman], writable: false, configurable: false,
+      },
+      rivalCharacterTypes: {
+        value: [Daemon, Undead, Vampire], writable: false, configurable: false,
+      },
+    });
   }
 
   init() {
@@ -24,8 +38,8 @@ export default class GameController {
     const characterCount = getRandomInt(this.gamePlay.boardSize * 2) + 1;
     const characterMaxLevel = getRandomInt(4) + 1;
 
-    const ourTeam = generateTeam([Bowman, Magician, Swordsman], characterMaxLevel, characterCount);
-    const rivalTeam = generateTeam([Daemon, Undead, Vampire], characterMaxLevel, characterCount);
+    const ourTeam = generateTeam(this.ourCharacterTypes, characterMaxLevel, characterCount);
+    const rivalTeam = generateTeam(this.rivalCharacterTypes, characterMaxLevel, characterCount);
 
     const occupiedPositions = [];
     this.positionedCharacters = [];
@@ -68,17 +82,14 @@ export default class GameController {
       (element) => element.position === index,
     );
 
-    if (positionedCharacter !== undefined && (
-      positionedCharacter.character instanceof Bowman
-      || positionedCharacter.character instanceof Magician
-      || positionedCharacter.character instanceof Swordsman
-    )) {
-      if (GameState.selectedCharacterPosition !== undefined) {
-        this.gamePlay.deselectCell(GameState.selectedCharacterPosition);
+    if (positionedCharacter !== undefined
+      && positionedCharacter.characterInstanceOf(this.ourCharacterTypes)) {
+      if (GameState.positionedCharacterSelected()) {
+        this.gamePlay.deselectCell(GameState.selectedPositionedCharacter.position);
       }
 
-      GameState.selectedCharacterPosition = index;
-      this.gamePlay.selectCell(GameState.selectedCharacterPosition);
+      GameState.selectedPositionedCharacter = positionedCharacter;
+      this.gamePlay.selectCell(GameState.selectedPositionedCharacter.position);
     } else {
       GamePlay.showError('Это не ваш персонаж!');
     }
@@ -89,6 +100,36 @@ export default class GameController {
     const positionedCharacter = this.positionedCharacters.find(
       (element) => element.position === index,
     );
+
+    if (GameState.positionedCharacterSelected()) {
+      if (GameState.cellHovered()
+        && GameState.hoveredCellPosition !== GameState.selectedPositionedCharacter.position) {
+        this.gamePlay.deselectCell(GameState.hoveredCellPosition);
+      }
+
+      GameState.hoveredCellPosition = index;
+
+      switch (true) {
+      case positionedCharacter !== undefined
+      && positionedCharacter.characterInstanceOf(this.ourCharacterTypes):
+        this.gamePlay.setCursor(cursors.pointer);
+        break;
+      case positionedCharacter !== undefined
+      && positionedCharacter.characterInstanceOf(this.rivalCharacterTypes)
+      && GameState.selectedPositionedCharacter.canCharacterAttack(index, this.gamePlay.boardSize):
+        this.gamePlay.selectCell(GameState.hoveredCellPosition, 'red');
+        this.gamePlay.setCursor(cursors.crosshair);
+        break;
+      case positionedCharacter === undefined
+      && GameState.selectedPositionedCharacter.canCharacterDriving(index, this.gamePlay.boardSize):
+        this.gamePlay.selectCell(GameState.hoveredCellPosition, 'green');
+        this.gamePlay.setCursor(cursors.pointer);
+        break;
+      default:
+        this.gamePlay.setCursor(cursors.notallowed);
+        break;
+      }
+    }
 
     if (positionedCharacter !== undefined) {
       this.gamePlay.showCellTooltip(positionedCharacter.character.briefInformation, index);

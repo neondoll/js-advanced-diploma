@@ -11,5 +11,14 @@ export default class Bowman extends Character {
     super(level, characterTypes.bowman);
     this.attack = 25;
     this.defence = 25;
+
+    /**
+     * `writable: false`     - запретить присвоение
+     * `configurable: false` - запретить удаление
+     */
+    Object.defineProperties(this, {
+      attackRange: { value: 2, writable: false, configurable: false },
+      drivingRange: { value: 2, writable: false, configurable: false },
+    });
   }
 }

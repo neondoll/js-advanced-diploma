@@ -1,5 +1,9 @@
 import Character from '../Character';
 
-test('Testing the impossibility of creating a Character class object', () => {
-  expect(() => new Character(1)).toThrow(Error);
+describe('class Daemon', () => {
+  test('testing impossibility of creating', () => {
+    const result = () => new Character(1);
+
+    expect(result).toThrow(Error);
+  });
 });
