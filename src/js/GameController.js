@@ -1,13 +1,12 @@
-import Bowman from './characters/Bowman';
-import Daemon from './characters/Daemon';
-import Magician from './characters/Magician';
+import GamePlay from './GamePlay';
 import PositionedCharacter from './PositionedCharacter';
-import Swordsman from './characters/Swordsman';
 import themes from './themes';
-import Undead from './characters/Undead';
-import Vampire from './characters/Vampire';
+import {
+  Bowman, Daemon, Magician, Swordsman, Undead, Vampire,
+} from './characters';
 import { generateTeam } from './generators';
 import { getRandomInt } from './utils';
+import GameState from './GameState';
 
 export default class GameController {
   constructor(gamePlay, stateService) {
@@ -65,11 +64,31 @@ export default class GameController {
 
   onCellClick(index) {
     // TODO: react to click
+    const positionedCharacter = this.positionedCharacters.find(
+      (element) => element.position === index,
+    );
+
+    if (positionedCharacter !== undefined && (
+      positionedCharacter.character instanceof Bowman
+      || positionedCharacter.character instanceof Magician
+      || positionedCharacter.character instanceof Swordsman
+    )) {
+      if (GameState.selectedCharacterPosition !== undefined) {
+        this.gamePlay.deselectCell(GameState.selectedCharacterPosition);
+      }
+
+      GameState.selectedCharacterPosition = index;
+      this.gamePlay.selectCell(GameState.selectedCharacterPosition);
+    } else {
+      GamePlay.showError('Это не ваш персонаж!');
+    }
   }
 
   onCellEnter(index) {
     // TODO: react to mouse enter
-    const positionedCharacter = this.positionedCharacters.find((element) => element.position === index);
+    const positionedCharacter = this.positionedCharacters.find(
+      (element) => element.position === index,
+    );
 
     if (positionedCharacter !== undefined) {
       this.gamePlay.showCellTooltip(positionedCharacter.character.briefInformation, index);
