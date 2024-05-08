@@ -1,12 +1,27 @@
 import Bowman from '../Bowman';
 import Character from '../../Character';
 
-test('Testing Bowman creation', () => {
-  const result = new Bowman(1);
+describe('class Bowman', () => {
+  test('testing instance of', () => {
+    const result = new Bowman(1);
 
-  expect(result).toBeInstanceOf(Character);
-  expect(result).toBeInstanceOf(Bowman);
-  expect(result).toEqual({
-    attack: 25, defence: 25, health: 50, level: 1, type: 'bowman',
+    expect(result).toBeInstanceOf(Character);
+    expect(result).toBeInstanceOf(Bowman);
+  });
+
+  test('testing creation', () => {
+    const result = new Bowman(1);
+
+    expect(result).toEqual({
+      attack: 25, defence: 25, health: 50, level: 1, type: 'bowman',
+    });
+  });
+
+  test('testing getting brief information', () => {
+    const character = new Bowman(1);
+
+    const result = character.briefInformation;
+
+    expect(result).toBe(`🎖${character.level} ⚔${character.attack} 🛡${character.defence} ❤${character.health}`);
   });
 });
