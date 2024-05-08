@@ -13,6 +13,8 @@ export default class GameController {
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
+
+    this.positionedCharacters = [];
   }
 
   init() {
@@ -27,7 +29,7 @@ export default class GameController {
     const rivalTeam = generateTeam([Daemon, Undead, Vampire], characterMaxLevel, characterCount);
 
     const occupiedPositions = [];
-    const positions = [];
+    this.positionedCharacters = [];
 
     ourTeam.characters.forEach((character) => {
       let position;
@@ -38,7 +40,7 @@ export default class GameController {
       } while (occupiedPositions.includes(position));
 
       occupiedPositions.push(position);
-      positions.push(new PositionedCharacter(character, position));
+      this.positionedCharacters.push(new PositionedCharacter(character, position));
     });
 
     rivalTeam.characters.forEach((character) => {
@@ -50,10 +52,13 @@ export default class GameController {
       } while (occupiedPositions.includes(position));
 
       occupiedPositions.push(position);
-      positions.push(new PositionedCharacter(character, position));
+      this.positionedCharacters.push(new PositionedCharacter(character, position));
     });
 
-    this.gamePlay.redrawPositions(positions);
+    this.gamePlay.redrawPositions(this.positionedCharacters);
+    this.gamePlay.addCellClickListener(this.onCellClick.bind(this));
+    this.gamePlay.addCellEnterListener(this.onCellEnter.bind(this));
+    this.gamePlay.addCellLeaveListener(this.onCellLeave.bind(this));
 
     // TODO: load saved stated from stateService (загрузка сохранена, указанная в StateService)
   }
@@ -64,9 +69,15 @@ export default class GameController {
 
   onCellEnter(index) {
     // TODO: react to mouse enter
+    const positionedCharacter = this.positionedCharacters.find((element) => element.position === index);
+
+    if (positionedCharacter !== undefined) {
+      this.gamePlay.showCellTooltip(positionedCharacter.character.briefInformation, index);
+    }
   }
 
   onCellLeave(index) {
     // TODO: react to mouse leave
+    this.gamePlay.hideCellTooltip(index);
   }
 }
