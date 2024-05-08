@@ -24,4 +24,20 @@ describe('class Magician', () => {
 
     expect(result).toBe(`🎖${character.level} ⚔${character.attack} 🛡${character.defence} ❤${character.health}`);
   });
+
+  test('testing getting driving range', () => {
+    const character = new Magician(1);
+
+    const result = character.drivingRange;
+
+    expect(result).toBe(1);
+  });
+
+  test('testing getting attack range', () => {
+    const character = new Magician(1);
+
+    const result = character.attackRange;
+
+    expect(result).toBe(4);
+  });
 });
