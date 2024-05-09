@@ -8,9 +8,13 @@ import characterTypes from '../characterTypes';
  */
 export default class Magician extends Character {
   constructor(level) {
-    super(level, characterTypes.magician);
+    super(1, characterTypes.magician);
     this.attack = 10;
     this.defence = 40;
+
+    for (let index = 1; index < level; index += 1) {
+      this.levelUp();
+    }
 
     /**
      * `writable: false`     - запретить присвоение
