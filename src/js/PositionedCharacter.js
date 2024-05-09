@@ -1,6 +1,18 @@
 import Character from './Character';
 
+/**
+ * Персонаж, привязанный к координате на поле
+ *
+ * @property character - персонаж
+ * @property position - координата на поле
+ */
 export default class PositionedCharacter {
+  /**
+   * Конструктор класса PositionedCharacter
+   *
+   * @param character - персонаж
+   * @param position - координата на поле
+   */
   constructor(character, position) {
     if (!(character instanceof Character)) {
       throw new Error('character must be instance of Character or its children');
@@ -17,9 +29,9 @@ export default class PositionedCharacter {
   /**
    * Определяет, может ли персонаж атаковать
    *
-   * @param position - проверяемая позиция
+   * @param position - проверяемая координата на поле
    * @param boardSize - размер поля
-   * @returns {boolean}
+   * @returns boolean
    */
   canAttack(position, boardSize) {
     const thisPositionColumn = this.position % boardSize;
@@ -37,9 +49,9 @@ export default class PositionedCharacter {
   /**
    * Определяет, может ли персонаж переместиться
    *
-   * @param position - проверяемая позиция
+   * @param position - проверяемая координата на поле
    * @param boardSize - размер поля
-   * @returns {boolean}
+   * @returns boolean
    */
   canMove(position, boardSize) {
     const thisPositionColumn = this.position % boardSize;
@@ -59,7 +71,7 @@ export default class PositionedCharacter {
    * Определяет принадлежность персонажа классу
    *
    * @param Class - один класс или массив классов
-   * @returns {boolean}
+   * @returns boolean
    */
   characterInstanceOf(Class) {
     if (Array.isArray(Class)) {

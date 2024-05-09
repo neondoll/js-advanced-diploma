@@ -4,7 +4,8 @@ import characterTypes from '../characterTypes';
 /**
  * Класс соперника Vampire (Вампир)
  *
- * @property level - уровень персонажа, от 1 до 4
+ * @property-read attackRange - дальность атаки
+ * @property-read moveRange - дальность движения
  */
 export default class Vampire extends Character {
   constructor(level) {

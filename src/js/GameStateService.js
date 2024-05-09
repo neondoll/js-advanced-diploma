@@ -1,4 +1,15 @@
+/**
+ * Класс, который взаимодействует с текущим состоянием (сохраняет данные в localStorage для
+ * последующей загрузки)
+ *
+ * @property storage - хранилище
+ */
 export default class GameStateService {
+  /**
+   * Конструктор класса GameStateService
+   *
+   * @param storage - хранилище
+   */
   constructor(storage) {
     this.storage = storage;
   }
