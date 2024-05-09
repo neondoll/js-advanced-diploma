@@ -17,23 +17,23 @@ describe('class Bowman', () => {
     });
   });
 
-  test('testing getting brief information', () => {
+  test('testing getting briefInformation', () => {
     const character = new Bowman(1);
 
     const result = character.briefInformation;
 
-    expect(result).toBe(`🎖${character.level} ⚔${character.attack} 🛡${character.defence} ❤${character.health}`);
+    expect(result).toBe(`\u{1F396}${character.level} \u{2694}${character.attack} \u{1F6E1}${character.defence} \u{2764}${character.health}`);
   });
 
-  test('testing getting driving range', () => {
+  test('testing getting moveRange', () => {
     const character = new Bowman(1);
 
-    const result = character.drivingRange;
+    const result = character.moveRange;
 
     expect(result).toBe(2);
   });
 
-  test('testing getting attack range', () => {
+  test('testing getting attackRange', () => {
     const character = new Bowman(1);
 
     const result = character.attackRange;

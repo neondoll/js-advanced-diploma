@@ -15,47 +15,38 @@ export default class PositionedCharacter {
   }
 
   /**
-   * Определяет возможность атаки персонажа
+   * Определяет, может ли персонаж атаковать
    *
    * @param position - проверяемая позиция
    * @param boardSize - размер поля
    * @returns {boolean}
    */
   canAttack(position, boardSize) {
-    const positionColumn = position % boardSize;
-    const positionRow = Math.floor(position / boardSize);
-    const thisPositionColumn = this.position % boardSize;
-    const thisPositionRow = Math.floor(this.position / boardSize);
+    const columnDifference = Math.abs((this.position % boardSize) - (position % boardSize));
+    const rowDifference = Math.abs(
+      Math.floor(this.position / boardSize) - Math.floor(position / boardSize),
+    );
 
-    return Math.abs(positionRow - thisPositionRow) <= this.character.attackRange
-      && Math.abs(positionColumn - thisPositionColumn) <= this.character.attackRange;
+    return columnDifference <= this.character.attackRange
+      && rowDifference <= this.character.attackRange;
   }
 
   /**
-   * Определяет возможность перемещения персонажа
+   * Определяет, может ли персонаж переместиться
    *
    * @param position - проверяемая позиция
    * @param boardSize - размер поля
    * @returns {boolean}
    */
-  canDriving(position, boardSize) {
-    const positionColumn = position % boardSize;
-    const positionRow = Math.floor(position / boardSize);
-    const thisPositionColumn = this.position % boardSize;
-    const thisPositionRow = Math.floor(this.position / boardSize);
+  canMove(position, boardSize) {
+    const columnDifference = Math.abs((this.position % boardSize) - (position % boardSize));
+    const rowDifference = Math.abs(
+      Math.floor(this.position / boardSize) - Math.floor(position / boardSize),
+    );
 
-    switch (true) {
-    case positionColumn === thisPositionColumn:
-      return Math.abs(positionRow - thisPositionRow) <= this.character.drivingRange;
-    case positionRow === thisPositionRow:
-      return Math.abs(positionColumn - thisPositionColumn) <= this.character.drivingRange;
-    case positionColumn + positionRow === thisPositionColumn + thisPositionRow:
-    case positionColumn - positionRow === thisPositionColumn - thisPositionRow:
-      return Math.abs(positionRow - thisPositionRow) <= this.character.drivingRange
-          && Math.abs(positionColumn - thisPositionColumn) <= this.character.drivingRange;
-    default:
-      return false;
-    }
+    return columnDifference <= this.character.moveRange
+      && rowDifference <= this.character.moveRange
+      && (columnDifference === 0 || rowDifference === 0 || columnDifference === rowDifference);
   }
 
   /**
