@@ -26,11 +26,7 @@ export default class Character {
     }
   }
 
-  // get attackRange() {}
-
   get briefInformation() {
-    return `🎖${this.level} ⚔${this.attack} 🛡${this.defence} ❤${this.health}`;
+    return `\u{1F396}${this.level} \u{2694}${this.attack} \u{1F6E1}${this.defence} \u{2764}${this.health}`;
   }
-
-  // get drivingRange() {}
 }
