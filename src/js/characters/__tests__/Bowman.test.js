@@ -40,4 +40,12 @@ describe('class Bowman', () => {
 
     expect(result).toBe(2);
   });
+
+  test('testing creation with level 3', () => {
+    const result = new Bowman(3);
+
+    expect(result).toEqual({
+      attack: 57, defence: 57, health: 100, level: 3, type: 'bowman',
+    });
+  });
 });

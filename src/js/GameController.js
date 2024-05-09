@@ -15,7 +15,6 @@ export default class GameController {
     this.stateService = stateService;
 
     this.computer = new Computer(this.gamePlay.boardSize);
-    this.positionedCharacters = [];
 
     /**
      * `writable: false`     - запретить присвоение
@@ -47,17 +46,11 @@ export default class GameController {
    */
   computerResponse() {
     if (!this.gameState.isPlayer) {
-      const positionedEnemyTeam = this.positionedCharacters.filter(
-        (hero) => hero.characterInstanceOf(this.enemyCharacterClasses),
-      );
-      const positionedPlayerTeam = this.positionedCharacters.filter(
-        (hero) => hero.characterInstanceOf(this.playerCharacterClasses),
-      );
       const timeout = 500;
 
       const computerAttack = this.computer.calculatingAttack(
-        positionedEnemyTeam,
-        positionedPlayerTeam,
+        this.positionedEnemyTeam,
+        this.positionedPlayerTeam,
       );
 
       if (computerAttack) {
@@ -76,8 +69,8 @@ export default class GameController {
       }
 
       const computerMovement = this.computer.calculatingMovement(
-        positionedEnemyTeam,
-        positionedPlayerTeam,
+        this.positionedEnemyTeam,
+        this.positionedPlayerTeam,
       );
 
       this.gamePlay.selectCell(computerMovement.enemyHero.position);
@@ -120,14 +113,44 @@ export default class GameController {
    * @param index номер клетки
    */
   heroAttack(index) {
-    const targetCharacter = this.positionedCharacters.find(
-      (element) => element.position === index,
+    const targetCharacterIndex = this.positionedCharacters.findIndex(
+      (hero) => hero.position === index,
     );
+    const targetCharacter = this.positionedCharacters[targetCharacterIndex];
 
     const damage = Computer.damageCalculation(this.selectedCharacter, targetCharacter);
 
     this.gamePlay.showDamage(index, damage).then(() => {
       targetCharacter.character.health -= damage;
+
+      if (targetCharacter.character.health <= 0) {
+        if (this.gameState.isPlayer) {
+          this.positionedEnemyTeam = this.positionedEnemyTeam.filter(
+            (hero) => hero !== targetCharacter,
+          );
+          this.positionedCharacters = [...this.positionedPlayerTeam, ...this.positionedEnemyTeam];
+
+          if (this.positionedEnemyTeam.length === 0) {
+            this.gamePlay.deselectCell(index);
+            this.gamePlay.deselectCell(this.selectedCharacter.position);
+            this.gamePlay.setCursor(cursors.auto);
+
+            this.selectedCharacter = undefined;
+
+            this.levelUp();
+            return;
+          }
+        } else {
+          this.positionedPlayerTeam = this.positionedPlayerTeam.filter(
+            (hero) => hero !== targetCharacter,
+          );
+          this.positionedCharacters = [...this.positionedPlayerTeam, ...this.positionedEnemyTeam];
+
+          if (this.positionedPlayerTeam.length === 0) {
+            return;
+          }
+        }
+      }
 
       this.gamePlay.redrawPositions(this.positionedCharacters);
       this.gamePlay.deselectCell(index);
@@ -166,30 +189,38 @@ export default class GameController {
    * Инициализация
    */
   init() {
+    this.gameState = { isPlayer: true, level: 1, theme: themes.prairie };
+
     // TODO: add event listeners to gamePlay events (добавить
     //       прослушиватели событий в события gamePlay)
-    this.gamePlay.drawUi(themes.prairie);
+    this.gamePlay.drawUi(this.gameState.theme);
 
     // Определяем количество персонажей
-    const characterCount = randomInt(this.gamePlay.boardSize * 2) + 1;
-    // Определяем максимальный уровень персонажей
-    const characterMaxLevel = randomInt(4) + 1;
+    const characterCount = 1;// randomInt(this.gamePlay.boardSize * 2) + 1;
     // Создаем начальные возможные позиции игрока и противника
     const initPositions = this.generateInitialPositions();
 
     // Создаем команды игрока и противника
-    const playerTeam = generateTeam(this.playerCharacterClasses, characterMaxLevel, characterCount);
-    const enemyTeam = generateTeam(this.enemyCharacterClasses, characterMaxLevel, characterCount);
+    this.playerTeam = generateTeam(
+      this.playerCharacterClasses,
+      this.gameState.level,
+      characterCount,
+    );
+    const enemyTeam = generateTeam(
+      this.enemyCharacterClasses,
+      this.gameState.level,
+      characterCount,
+    );
 
     // Расставляем персонажей команд игрока и противника
-    const positionedPlayerTeam = this.constructor.positioningTeam(playerTeam, initPositions.player);
-    const positionedEnemyTeam = this.constructor.positioningTeam(enemyTeam, initPositions.enemy);
-
-    this.positionedCharacters = [...positionedPlayerTeam, ...positionedEnemyTeam];
+    this.positionedPlayerTeam = this.constructor.positioningTeam(
+      this.playerTeam,
+      initPositions.player,
+    );
+    this.positionedEnemyTeam = this.constructor.positioningTeam(enemyTeam, initPositions.enemy);
+    this.positionedCharacters = [...this.positionedPlayerTeam, ...this.positionedEnemyTeam];
 
     this.gamePlay.redrawPositions(this.positionedCharacters);
-
-    this.gameState = { isPlayer: true };
 
     // TODO: load saved stated from stateService (загрузка сохранена, указанная в StateService)
   }
@@ -214,6 +245,59 @@ export default class GameController {
   isPlayerCharacter(positionedCharacter) {
     return positionedCharacter
       && positionedCharacter.characterInstanceOf(this.playerCharacterClasses);
+  }
+
+  /**
+   * Повышение уровня
+   */
+  levelUp() {
+    this.gameState.isPlayer = true;
+    this.gameState.level += 1;
+
+    switch (this.gameState.level % 4) {
+    case 1: {
+      this.gameState.theme = themes.prairie;
+      break;
+    }
+    case 2: {
+      this.gameState.theme = themes.desert;
+      break;
+    }
+    case 3: {
+      this.gameState.theme = themes.arctic;
+      break;
+    }
+    default: {
+      this.gameState.theme = themes.mountain;
+      break;
+    }
+    }
+
+    this.gamePlay.drawUi(this.gameState.theme);
+
+    const characterCount = 1;
+    const initPositions = this.generateInitialPositions();
+
+    this.playerTeam.characters = [];
+    const enemyTeam = generateTeam(
+      this.enemyCharacterClasses,
+      this.gameState.level,
+      characterCount,
+    );
+
+    this.positionedPlayerTeam.forEach((hero) => {
+      hero.character.levelUp();
+      this.playerTeam.characters.push(hero.character);
+    });
+
+    this.positionedPlayerTeam = this.constructor.positioningTeam(
+      this.playerTeam,
+      initPositions.player,
+    );
+    this.positionedEnemyTeam = this.constructor.positioningTeam(enemyTeam, initPositions.enemy);
+    this.positionedCharacters = [...this.positionedPlayerTeam, ...this.positionedEnemyTeam];
+
+    this.gamePlay.redrawPositions(this.positionedCharacters);
   }
 
   /**

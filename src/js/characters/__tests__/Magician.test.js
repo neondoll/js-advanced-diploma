@@ -40,4 +40,12 @@ describe('class Magician', () => {
 
     expect(result).toBe(4);
   });
+
+  test('testing creation with level 3', () => {
+    const result = new Magician(3);
+
+    expect(result).toEqual({
+      attack: 23, defence: 93, health: 100, level: 3, type: 'magician',
+    });
+  });
 });

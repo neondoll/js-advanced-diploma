@@ -25,32 +25,32 @@ export default class Computer {
 
           if (playerHero.character.health - damage <= 0) {
             killOptions.push([enemyHero, playerHero]);
-          } else {
-            const distance = this.distanceCalculation(enemyHero.position, playerHero.position);
+          }
 
-            if ((damage > maxDamage) || (damage === maxDamage && distance < minDistance)) {
-              maxDamage = damage;
-              minDistance = distance;
-              targetEnemyHero = enemyHero;
-              targetPlayerHero = playerHero;
-            }
+          const distance = this.distanceCalculation(enemyHero.position, playerHero.position);
+
+          if ((damage > maxDamage) || (damage === maxDamage && distance < minDistance)) {
+            maxDamage = damage;
+            minDistance = distance;
+            targetEnemyHero = enemyHero;
+            targetPlayerHero = playerHero;
           }
         }
       });
     });
 
     if (killOptions.length) {
+      minDistance = Infinity;
       targetEnemyHero = null;
       targetPlayerHero = null;
-      minDistance = Infinity;
 
       killOptions.forEach(([enemyHero, playerHero]) => {
         const distance = this.distanceCalculation(enemyHero.position, playerHero.position);
 
         if (distance < minDistance) {
-          targetPlayerHero = enemyHero;
-          targetEnemyHero = enemyHero;
           minDistance = distance;
+          targetEnemyHero = enemyHero;
+          targetPlayerHero = playerHero;
         }
       });
     }
