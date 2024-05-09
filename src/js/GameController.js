@@ -82,16 +82,40 @@ export default class GameController {
       (element) => element.position === index,
     );
 
-    if (positionedCharacter !== undefined
-      && positionedCharacter.characterInstanceOf(this.ourCharacterTypes)) {
+    const hasPositionedCharacter = positionedCharacter !== undefined;
+    const isOurPositionedCharacter = hasPositionedCharacter
+      && positionedCharacter.characterInstanceOf(this.ourCharacterTypes);
+
+    switch (true) {
+    case isOurPositionedCharacter: {
       if (GameState.positionedCharacterSelected()) {
         this.gamePlay.deselectCell(GameState.selectedPositionedCharacter.position);
       }
 
       GameState.selectedPositionedCharacter = positionedCharacter;
       this.gamePlay.selectCell(GameState.selectedPositionedCharacter.position);
-    } else {
+      break;
+    }
+    case (
+      !hasPositionedCharacter
+        && GameState.positionedCharacterSelected()
+        && GameState.selectedPositionedCharacter.canDriving(index, this.gamePlay.boardSize)
+    ): {
+      const oldCharacterPosition = GameState.selectedPositionedCharacter.position;
+
+      GameState.selectedPositionedCharacter.position = index;
+
+      this.gamePlay.redrawPositions(this.positionedCharacters);
+      this.gamePlay.deselectCell(GameState.hoveredCellPosition);
+      this.gamePlay.deselectCell(oldCharacterPosition);
+
+      GameState.hoveredCellPosition = undefined;
+      GameState.selectedPositionedCharacter = undefined;
+      break;
+    }
+    default: {
       GamePlay.showError('Это не ваш персонаж!');
+    }
     }
   }
 
@@ -101,37 +125,54 @@ export default class GameController {
       (element) => element.position === index,
     );
 
+    const hasPositionedCharacter = positionedCharacter !== undefined;
+
     if (GameState.positionedCharacterSelected()) {
-      if (GameState.cellHovered()
-        && GameState.hoveredCellPosition !== GameState.selectedPositionedCharacter.position) {
+      const isOurPositionedCharacter = hasPositionedCharacter
+        && positionedCharacter.characterInstanceOf(this.ourCharacterTypes);
+      const isRivalPositionedCharacter = hasPositionedCharacter
+        && positionedCharacter.characterInstanceOf(this.rivalCharacterTypes);
+
+      if (
+        GameState.cellHovered()
+        && GameState.hoveredCellPosition !== GameState.selectedPositionedCharacter.position
+      ) {
         this.gamePlay.deselectCell(GameState.hoveredCellPosition);
       }
 
       GameState.hoveredCellPosition = index;
 
       switch (true) {
-      case positionedCharacter !== undefined
-      && positionedCharacter.characterInstanceOf(this.ourCharacterTypes):
+      case isOurPositionedCharacter: {
         this.gamePlay.setCursor(cursors.pointer);
         break;
-      case positionedCharacter !== undefined
-      && positionedCharacter.characterInstanceOf(this.rivalCharacterTypes)
-      && GameState.selectedPositionedCharacter.canCharacterAttack(index, this.gamePlay.boardSize):
+      }
+      case (
+        isRivalPositionedCharacter
+          && GameState.selectedPositionedCharacter.canAttack(index, this.gamePlay.boardSize)
+      ): {
         this.gamePlay.selectCell(GameState.hoveredCellPosition, 'red');
         this.gamePlay.setCursor(cursors.crosshair);
         break;
-      case positionedCharacter === undefined
-      && GameState.selectedPositionedCharacter.canCharacterDriving(index, this.gamePlay.boardSize):
+      }
+      case (
+        !hasPositionedCharacter
+          && GameState.selectedPositionedCharacter.canDriving(index, this.gamePlay.boardSize)
+      ): {
         this.gamePlay.selectCell(GameState.hoveredCellPosition, 'green');
         this.gamePlay.setCursor(cursors.pointer);
         break;
-      default:
+      }
+      default: {
         this.gamePlay.setCursor(cursors.notallowed);
         break;
       }
+      }
+    } else {
+      this.gamePlay.setCursor(cursors.auto);
     }
 
-    if (positionedCharacter !== undefined) {
+    if (hasPositionedCharacter) {
       this.gamePlay.showCellTooltip(positionedCharacter.character.briefInformation, index);
     }
   }
