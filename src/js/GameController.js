@@ -68,7 +68,7 @@ export default class GameController {
           this.gamePlay.selectCell(computerAttack.playerHero.position, 'red');
 
           setTimeout(() => {
-            this.enemyAttack(computerAttack.playerHero.position);
+            this.heroAttack(computerAttack.playerHero.position);
           }, timeout);
         }, timeout);
 
@@ -87,52 +87,10 @@ export default class GameController {
         this.gamePlay.selectCell(computerMovement.planMoveCell, 'green');
 
         setTimeout(() => {
-          this.enemyMovement(computerMovement.planMoveCell);
+          this.heroMovement(computerMovement.planMoveCell);
         }, timeout);
       }, timeout);
     }
-  }
-
-  /**
-   * Атака противника
-   *
-   * @param index номер клетки
-   */
-  enemyAttack(index) {
-    const targetCharacter = this.positionedCharacters.find(
-      (element) => element.position === index,
-    );
-
-    const damage = Computer.damageCalculation(this.selectedCharacter, targetCharacter);
-
-    this.gamePlay.showDamage(index, damage).then(() => {
-      targetCharacter.character.health -= damage;
-
-      this.gamePlay.redrawPositions(this.positionedCharacters);
-      this.gamePlay.deselectCell(index);
-      this.gamePlay.deselectCell(this.selectedCharacter.position);
-
-      this.selectedCharacter = undefined;
-      this.gameState.isPlayer = true;
-    });
-  }
-
-  /**
-   * Перемещение противника
-   *
-   * @param index номер клетки
-   */
-  enemyMovement(index) {
-    const oldCharacterPosition = this.selectedCharacter.position;
-
-    this.selectedCharacter.position = index;
-
-    this.gamePlay.redrawPositions(this.positionedCharacters);
-    this.gamePlay.deselectCell(index);
-    this.gamePlay.deselectCell(oldCharacterPosition);
-
-    this.selectedCharacter = undefined;
-    this.gameState.isPlayer = true;
   }
 
   /**
@@ -156,6 +114,57 @@ export default class GameController {
     return positions;
   }
 
+  /**
+   * Атака героя
+   *
+   * @param index номер клетки
+   */
+  heroAttack(index) {
+    const targetCharacter = this.positionedCharacters.find(
+      (element) => element.position === index,
+    );
+
+    const damage = Computer.damageCalculation(this.selectedCharacter, targetCharacter);
+
+    this.gamePlay.showDamage(index, damage).then(() => {
+      targetCharacter.character.health -= damage;
+
+      this.gamePlay.redrawPositions(this.positionedCharacters);
+      this.gamePlay.deselectCell(index);
+      this.gamePlay.deselectCell(this.selectedCharacter.position);
+      this.gamePlay.setCursor(cursors.auto);
+
+      this.selectedCharacter = undefined;
+      this.gameState.isPlayer = !this.gameState.isPlayer;
+
+      this.computerResponse();
+    });
+  }
+
+  /**
+   * Перемещение героя
+   *
+   * @param index номер клетки
+   */
+  heroMovement(index) {
+    const oldCharacterPosition = this.selectedCharacter.position;
+
+    this.selectedCharacter.position = index;
+
+    this.gamePlay.redrawPositions(this.positionedCharacters);
+    this.gamePlay.deselectCell(index);
+    this.gamePlay.deselectCell(oldCharacterPosition);
+    this.gamePlay.setCursor(cursors.auto);
+
+    this.selectedCharacter = undefined;
+    this.gameState.isPlayer = !this.gameState.isPlayer;
+
+    this.computerResponse();
+  }
+
+  /**
+   * Инициализация
+   */
   init() {
     // TODO: add event listeners to gamePlay events (добавить
     //       прослушиватели событий в события gamePlay)
@@ -220,12 +229,12 @@ export default class GameController {
       );
 
       if (this.gamePlay.cells[index].classList.contains('selected-green')) {
-        this.playerMovement(index);
+        this.heroMovement(index);
         return;
       }
 
       if (this.gamePlay.cells[index].classList.contains('selected-red')) {
-        this.playerAttack(index);
+        this.heroAttack(index);
         return;
       }
 
@@ -307,54 +316,6 @@ export default class GameController {
     if (!this.gamePlay.cells[index].classList.contains('selected-yellow')) {
       this.gamePlay.deselectCell(index);
     }
-  }
-
-  /**
-   * Атака игрока
-   *
-   * @param index номер клетки
-   */
-  playerAttack(index) {
-    const targetCharacter = this.positionedCharacters.find(
-      (element) => element.position === index,
-    );
-
-    const damage = Computer.damageCalculation(this.selectedCharacter, targetCharacter);
-
-    this.gamePlay.showDamage(index, damage).then(() => {
-      targetCharacter.character.health -= damage;
-
-      this.gamePlay.redrawPositions(this.positionedCharacters);
-      this.gamePlay.deselectCell(index);
-      this.gamePlay.deselectCell(this.selectedCharacter.position);
-      this.gamePlay.setCursor(cursors.auto);
-
-      this.selectedCharacter = undefined;
-      this.gameState.isPlayer = false;
-
-      this.computerResponse();
-    });
-  }
-
-  /**
-   * Перемещение игрока
-   *
-   * @param index номер клетки
-   */
-  playerMovement(index) {
-    const oldCharacterPosition = this.selectedCharacter.position;
-
-    this.selectedCharacter.position = index;
-
-    this.gamePlay.redrawPositions(this.positionedCharacters);
-    this.gamePlay.deselectCell(index);
-    this.gamePlay.deselectCell(oldCharacterPosition);
-    this.gamePlay.setCursor(cursors.auto);
-
-    this.selectedCharacter = undefined;
-    this.gameState.isPlayer = false;
-
-    this.computerResponse();
   }
 
   /**

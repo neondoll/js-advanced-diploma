@@ -65,6 +65,8 @@ export default class Computer {
   /**
    * Расчет перемещения
    *
+   * @param positionedEnemyTeam команда противника
+   * @param positionedPlayerTeam команда игрока
    * @returns {{enemyHero: PositionedCharacter, planMoveCell: number}}
    */
   calculatingMovement(positionedEnemyTeam, positionedPlayerTeam) {
