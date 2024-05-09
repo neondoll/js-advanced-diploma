@@ -14,7 +14,14 @@ export default class PositionedCharacter {
     this.position = position;
   }
 
-  canCharacterAttack(position, boardSize) {
+  /**
+   * Определяет возможность атаки персонажа
+   *
+   * @param position - проверяемая позиция
+   * @param boardSize - размер поля
+   * @returns {boolean}
+   */
+  canAttack(position, boardSize) {
     const positionColumn = position % boardSize;
     const positionRow = Math.floor(position / boardSize);
     const thisPositionColumn = this.position % boardSize;
@@ -24,7 +31,14 @@ export default class PositionedCharacter {
       && Math.abs(positionColumn - thisPositionColumn) <= this.character.attackRange;
   }
 
-  canCharacterDriving(position, boardSize) {
+  /**
+   * Определяет возможность перемещения персонажа
+   *
+   * @param position - проверяемая позиция
+   * @param boardSize - размер поля
+   * @returns {boolean}
+   */
+  canDriving(position, boardSize) {
     const positionColumn = position % boardSize;
     const positionRow = Math.floor(position / boardSize);
     const thisPositionColumn = this.position % boardSize;
@@ -44,6 +58,12 @@ export default class PositionedCharacter {
     }
   }
 
+  /**
+   * Определяет принадлежность персонажа классу
+   *
+   * @param Class - один класс или массив классов
+   * @returns {boolean}
+   */
   characterInstanceOf(Class) {
     if (Array.isArray(Class)) {
       return Boolean(Class.filter((c) => this.character instanceof c).length);
