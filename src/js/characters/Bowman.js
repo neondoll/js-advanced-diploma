@@ -4,7 +4,8 @@ import characterTypes from '../characterTypes';
 /**
  * Класс игрока Bowman (Лучник)
  *
- * @property level - уровень персонажа, от 1 до 4
+ * @property-read attackRange - дальность атаки
+ * @property-read moveRange - дальность движения
  */
 export default class Bowman extends Character {
   constructor(level) {

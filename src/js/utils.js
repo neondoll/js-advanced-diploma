@@ -1,5 +1,24 @@
 /**
- * @todo
+ * Определяет уровень жизни
+ *
+ * @param health - числовое представление жизни
+ * @returns string - строковое представление жизни
+ */
+export function calcHealthLevel(health) {
+  if (health < 15) {
+    return 'critical';
+  }
+
+  if (health < 50) {
+    return 'normal';
+  }
+
+  return 'high';
+}
+
+/**
+ * Определяет тип плитки
+ *
  * @param index - индекс поля
  * @param boardSize - размер квадратного поля (в длину или ширину)
  * @returns string - тип ячейки на поле:
@@ -50,24 +69,12 @@ export function calcTileType(index, boardSize) {
   }
 }
 
-export function calcHealthLevel(health) {
-  if (health < 15) {
-    return 'critical';
-  }
-
-  if (health < 50) {
-    return 'normal';
-  }
-
-  return 'high';
-}
-
 /**
  * Генерирует случайное число
  *
- * @param max
- * @returns {number}
+ * @param range - диапазон чисел
+ * @returns number - случайное число
  */
-export function randomInt(max) {
-  return Math.floor(Math.random() * max);
+export function randomInt(range) {
+  return Math.floor(Math.random() * range);
 }

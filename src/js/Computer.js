@@ -1,4 +1,14 @@
+/**
+ * Класс, отвечающий за действия компьютера
+ *
+ * @property boardSize - размер поля
+ */
 export default class Computer {
+  /**
+   * Конструктор класса Computer
+   *
+   * @param boardSize - размер поля
+   */
   constructor(boardSize) {
     this.boardSize = boardSize;
   }
@@ -6,9 +16,10 @@ export default class Computer {
   /**
    * Расчет атки
    *
-   * @param positionedEnemyTeam команда противника
-   * @param positionedPlayerTeam команда игрока
-   * @returns {{enemyHero: PositionedCharacter, playerHero: PositionedCharacter} | false}
+   * @param positionedEnemyTeam - команда противника
+   * @param positionedPlayerTeam - команда игрока
+   * @returns {{enemyHero: PositionedCharacter, playerHero: PositionedCharacter} | false} - объект,
+   * содержащий противника и игрока, или false
    */
   calculatingAttack(positionedEnemyTeam, positionedPlayerTeam) {
     const killOptions = [];
@@ -65,9 +76,10 @@ export default class Computer {
   /**
    * Расчет перемещения
    *
-   * @param positionedEnemyTeam команда противника
-   * @param positionedPlayerTeam команда игрока
-   * @returns {{enemyHero: PositionedCharacter, planMoveCell: number}}
+   * @param positionedEnemyTeam - команда противника
+   * @param positionedPlayerTeam - команда игрока
+   * @returns {{enemyHero: PositionedCharacter, planMoveCell: number}} - объект, содержащий
+   * противника и координату на поле для перемещения
    */
   calculatingMovement(positionedEnemyTeam, positionedPlayerTeam) {
     const positionedCharacters = [...positionedEnemyTeam, ...positionedPlayerTeam];
@@ -115,9 +127,9 @@ export default class Computer {
   /**
    * Расчет урона
    *
-   * @param attacker атакующий персонаж
-   * @param target атакованный персонаж
-   * @returns number
+   * @param attacker - атакующий персонаж
+   * @param target - атакованный персонаж
+   * @returns number - урон
    */
   static damageCalculation(attacker, target) {
     const attackerAttack = attacker.character.attack;
@@ -133,9 +145,9 @@ export default class Computer {
   /**
    * Расчет дистанции
    *
-   * @param position1 номер клетки
-   * @param position2 номер клетки
-   * @returns number
+   * @param position1 - номер клетки
+   * @param position2 - номер клетки
+   * @returns number - дистанция
    */
   distanceCalculation(position1, position2) {
     const positionColumn1 = position1 % this.boardSize;
@@ -149,9 +161,9 @@ export default class Computer {
   /**
    * Генерирует доступные для перемещения клетки
    *
-   * @param positionedCharacters
-   * @param currentPositionedCharacter
-   * @returns Array
+   * @param positionedCharacters - массив персонажей, привязанных к координатам на поле
+   * @param currentPositionedCharacter - текущий персонаж, привязанный к координате на поле
+   * @returns Array<number> - массив координат на поле
    */
   generateMoveableCells(positionedCharacters, currentPositionedCharacter) {
     const availableCells = [];

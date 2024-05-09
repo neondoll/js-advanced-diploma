@@ -9,7 +9,27 @@ import {
 import { generateTeam } from './generators';
 import { randomInt } from './utils';
 
+/**
+ * Класс, отвечающий за логику приложения
+ *
+ * @property gamePlay - объект, отвечающий за взаимодействие с HTML-страницей
+ * @property gameState - объект, который хранит текущее состояние игры
+ * @property computer - объект, отвечающий за действия компьютера
+ * @property stateService - объект, который взаимодействует с текущим состоянием
+ * @property playerTeam - команда игрока
+ * @property positionedPlayerTeam - массив персонажей игрока, привязанных к координатам на поле
+ * @property positionedEnemyTeam - массив персонажей противника, привязанных к координатам на поле
+ * @property positionedCharacters - массив персонажей, привязанных к координатам на поле
+ * @property-read playerCharacterClasses - массив классов игрока
+ * @property-read enemyCharacterClasses - массив классов противника
+ */
 export default class GameController {
+  /**
+   * Конструктор класса GameController
+   *
+   * @param gamePlay - объект, отвечающий за взаимодействие с HTML-страницей
+   * @param stateService - объект, который взаимодействует с текущим состоянием
+   */
   constructor(gamePlay, stateService) {
     this.gamePlay = gamePlay;
     this.stateService = stateService;
@@ -39,6 +59,8 @@ export default class GameController {
     this.gamePlay.addCellClickListener(this.onCellClick.bind(this));
     this.gamePlay.addCellEnterListener(this.onCellEnter.bind(this));
     this.gamePlay.addCellLeaveListener(this.onCellLeave.bind(this));
+
+    this.gamePlay.addNewGameListener(() => this.init());
   }
 
   /**
@@ -87,9 +109,25 @@ export default class GameController {
   }
 
   /**
-   * Генерирует начальные возможные позиции игрока и противника
+   * Завершение игры
+   */
+  gameOver() {
+    this.gameState.isOver = true;
+    this.gamePlay.redrawPositions(this.positionedCharacters);
+    this.gamePlay.setCursor(cursors.auto);
+
+    const isWin = this.positionedEnemyTeam.length === 0;
+
+    setTimeout(() => {
+      GamePlay.showMessage(isWin ? 'Вы выиграли!' : 'Вы проиграли!');
+    }, 100);
+  }
+
+  /**
+   * Генерирует начальные возможные координаты на поле для игрока и противника
    *
-   * @returns {{enemy: Array, player: Array}}
+   * @returns {{enemy: Array<number>, player: Array<number>}} - объект, содержавший два массива
+   * возможных координат на поле
    */
   generateInitialPositions() {
     const positions = { player: [], enemy: [] };
@@ -110,7 +148,7 @@ export default class GameController {
   /**
    * Атака героя
    *
-   * @param index номер клетки
+   * @param index - координата на поле
    */
   heroAttack(index) {
     const targetCharacterIndex = this.positionedCharacters.findIndex(
@@ -147,6 +185,13 @@ export default class GameController {
           this.positionedCharacters = [...this.positionedPlayerTeam, ...this.positionedEnemyTeam];
 
           if (this.positionedPlayerTeam.length === 0) {
+            this.gamePlay.deselectCell(index);
+            this.gamePlay.deselectCell(this.selectedCharacter.position);
+            this.gamePlay.setCursor(cursors.auto);
+
+            this.selectedCharacter = undefined;
+
+            this.gameOver();
             return;
           }
         }
@@ -167,7 +212,7 @@ export default class GameController {
   /**
    * Перемещение героя
    *
-   * @param index номер клетки
+   * @param index - координата на поле
    */
   heroMovement(index) {
     const oldCharacterPosition = this.selectedCharacter.position;
@@ -186,13 +231,13 @@ export default class GameController {
   }
 
   /**
-   * Инициализация
+   * Инициализация игры
    */
   init() {
-    this.gameState = { isPlayer: true, level: 1, theme: themes.prairie };
+    this.gameState = {
+      isOver: false, isPlayer: true, level: 1, theme: themes.prairie,
+    };
 
-    // TODO: add event listeners to gamePlay events (добавить
-    //       прослушиватели событий в события gamePlay)
     this.gamePlay.drawUi(this.gameState.theme);
 
     // Определяем количество персонажей
@@ -226,9 +271,9 @@ export default class GameController {
   }
 
   /**
-   * Проверяет, принадлежит ли персонаж противнику
+   * Проверяет, является ли персонаж противником
    *
-   * @param positionedCharacter
+   * @param positionedCharacter - персонаж, привязанный к координате на поле
    * @returns boolean
    */
   isEnemyCharacter(positionedCharacter) {
@@ -237,9 +282,9 @@ export default class GameController {
   }
 
   /**
-   * Проверяет, принадлежит ли персонаж игроку
+   * Проверяет, является ли персонаж игроком
    *
-   * @param positionedCharacter
+   * @param positionedCharacter - персонаж, привязанный к координате на поле
    * @returns boolean
    */
   isPlayerCharacter(positionedCharacter) {
@@ -254,7 +299,7 @@ export default class GameController {
     this.gameState.isPlayer = true;
     this.gameState.level += 1;
 
-    switch (this.gameState.level % 4) {
+    switch (this.gameState.level) {
     case 1: {
       this.gameState.theme = themes.prairie;
       break;
@@ -267,9 +312,16 @@ export default class GameController {
       this.gameState.theme = themes.arctic;
       break;
     }
-    default: {
+    case 4: {
       this.gameState.theme = themes.mountain;
       break;
+    }
+    case 5: {
+      this.gameOver();
+      break;
+    }
+    default: {
+      throw new Error('Unknown level');
     }
     }
 
@@ -303,9 +355,13 @@ export default class GameController {
   /**
    * Реакция на нажатие
    *
-   * @param index номер клетки
+   * @param index - координата на поле
    */
   onCellClick(index) {
+    if (this.gameState.isOver) {
+      return;
+    }
+
     if (this.gameState.isPlayer) {
       const clickedCharacterElement = this.gamePlay.cells[index].querySelector('.character');
       const clickedCharacter = this.positionedCharacters.find(
@@ -339,9 +395,13 @@ export default class GameController {
   /**
    * Реакция на наведение мыши
    *
-   * @param index номер клетки
+   * @param index - координата на поле
    */
   onCellEnter(index) {
+    if (this.gameState.isOver) {
+      return;
+    }
+
     const enteredCharacterElement = this.gamePlay.cells[index].querySelector('.character');
     const enteredCharacter = this.positionedCharacters.find(
       (element) => element.position === index,
@@ -392,7 +452,7 @@ export default class GameController {
   /**
    * Реакция на сведение мыши
    *
-   * @param index номер клетки
+   * @param index - координата на поле
    */
   onCellLeave(index) {
     this.gamePlay.hideCellTooltip(index);
@@ -405,9 +465,9 @@ export default class GameController {
   /**
    * Расставляет персонажей команды на доступные позиции
    *
-   * @param team команда
-   * @param positions доступные позиции
-   * @returns Array<PositionedCharacter>
+   * @param team - команда
+   * @param positions - массив координат на поле
+   * @returns Array<PositionedCharacter> - массив персонажей, привязанных к координатам на поле
    */
   static positioningTeam(team, positions) {
     const positionedTeam = [];

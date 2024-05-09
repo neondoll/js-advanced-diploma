@@ -1,5 +1,6 @@
 /**
  * Базовый класс, от которого наследуются классы персонажей
+ *
  * @property level - уровень персонажа, от 1 до 4
  * @property attack - показатель атаки
  * @property defence - показатель защиты
@@ -13,6 +14,12 @@
  * vampire
  */
 export default class Character {
+  /**
+   * Конструктор класса Character
+   *
+   * @param level - уровень персонажа
+   * @param type - тип персонажа
+   */
   constructor(level, type = 'generic') {
     this.level = level;
     this.attack = 0;
