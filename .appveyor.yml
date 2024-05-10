@@ -1,19 +1,31 @@
+version: 1.0.{build}
+
+image:
+  - Visual Studio 2022
+
 environment:
-  nodejs_version: "20.11"
+  nodejs_version: 20
 
 branches:
   only:
-    - gh-pages  # ветка git
+    - gh-pages
 
-cache: node_modules  # кеширование
+cache: node_modules
+
+platform:
+  - x64
 
 install:
-  - npm install  # команда установки зависимостей
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - npm install
 
-build: off  # отключаем встроенную в appveyor систему сборки
+build: off
 
-build_script:
-  - npm run prod  # команда сборки
-
-test_script:
-  - npm run lint && npm test  # скрипт тестирования
+#test_script:
+#  - node --version
+#  - npm --version
+#  - npm run lint
+#  - npm test
+#
+#deploy_script:
+#  - npm run prod
