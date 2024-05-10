@@ -8,6 +8,11 @@ import characterTypes from '../characterTypes';
  * @property-read moveRange - дальность движения
  */
 export default class Daemon extends Character {
+  /**
+   * Конструктор класса Daemon
+   *
+   * @param level - уровень персонажа
+   */
   constructor(level) {
     super(1, characterTypes.daemon);
     this.attack = 10;

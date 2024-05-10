@@ -8,6 +8,11 @@ import characterTypes from '../characterTypes';
  * @property-read moveRange - дальность движения
  */
 export default class Undead extends Character {
+  /**
+   * Конструктор класса Undead
+   *
+   * @param level - уровень персонажа
+   */
   constructor(level) {
     super(1, characterTypes.undead);
     this.attack = 40;

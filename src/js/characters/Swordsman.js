@@ -8,6 +8,11 @@ import characterTypes from '../characterTypes';
  * @property-read moveRange - дальность движения
  */
 export default class Swordsman extends Character {
+  /**
+   * Конструктор класса Swordsman
+   *
+   * @param level - уровень персонажа
+   */
   constructor(level) {
     super(1, characterTypes.swordsman);
     this.attack = 40;

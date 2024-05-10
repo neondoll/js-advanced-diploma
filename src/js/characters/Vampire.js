@@ -8,6 +8,11 @@ import characterTypes from '../characterTypes';
  * @property-read moveRange - дальность движения
  */
 export default class Vampire extends Character {
+  /**
+   * Конструктор класса Vampire
+   *
+   * @param level - уровень персонажа
+   */
   constructor(level) {
     super(1, characterTypes.vampire);
     this.attack = 25;

@@ -17,7 +17,12 @@ export default class Team {
    *
    * @param characters - массив персонажей
    */
-  constructor(characters) {
-    this.characters = characters;
-  }
+  constructor(characters = []) { this.characters = characters; }
+
+  /**
+   * Добавление персонажа
+   *
+   * @param character - персонаж
+   */
+  addCharacter(character) { this.characters.push(character); }
 }

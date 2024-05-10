@@ -2,50 +2,26 @@ import Character from '../../Character';
 import Magician from '../Magician';
 
 describe('class Magician', () => {
-  test('testing instance of', () => {
-    const result = new Magician(1);
+  test('new Magician(1)', () => expect(new Magician(1)).toEqual({
+    attack: 10, defence: 40, health: 50, level: 1, type: 'magician',
+  }));
+  test('new Magician(3)', () => expect(new Magician(3)).toEqual({
+    attack: 23, defence: 93, health: 100, level: 3, type: 'magician',
+  }));
+  describe('[Magician]', () => {
+    let character;
 
-    expect(result).toBeInstanceOf(Character);
-    expect(result).toBeInstanceOf(Magician);
-  });
+    beforeAll(() => { character = new Magician(1); });
+    afterAll(() => { character = undefined; });
 
-  test('testing creation', () => {
-    const result = new Magician(1);
-
-    expect(result).toEqual({
-      attack: 10, defence: 40, health: 50, level: 1, type: 'magician',
+    test('instance of Character and Magician', () => {
+      expect(character).toBeInstanceOf(Character);
+      expect(character).toBeInstanceOf(Magician);
     });
-  });
-
-  test('testing getting briefInformation', () => {
-    const character = new Magician(1);
-
-    const result = character.briefInformation;
-
-    expect(result).toBe(`\u{1F396}${character.level} \u{2694}${character.attack} \u{1F6E1}${character.defence} \u{2764}${character.health}`);
-  });
-
-  test('testing getting moveRange', () => {
-    const character = new Magician(1);
-
-    const result = character.moveRange;
-
-    expect(result).toBe(1);
-  });
-
-  test('testing getting attackRange', () => {
-    const character = new Magician(1);
-
-    const result = character.attackRange;
-
-    expect(result).toBe(4);
-  });
-
-  test('testing creation with level 3', () => {
-    const result = new Magician(3);
-
-    expect(result).toEqual({
-      attack: 23, defence: 93, health: 100, level: 3, type: 'magician',
+    test('.attackRange', () => expect(character.attackRange).toBe(4));
+    test('.briefInformation', () => {
+      expect(character.briefInformation).toBe(`\u{1F396}${character.level} \u{2694}${character.attack} \u{1F6E1}${character.defence} \u{2764}${character.health}`);
     });
+    test('.moveRange', () => expect(character.moveRange).toBe(1));
   });
 });

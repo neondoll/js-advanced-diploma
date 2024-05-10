@@ -5,13 +5,9 @@
  * @returns string - строковое представление жизни
  */
 export function calcHealthLevel(health) {
-  if (health < 15) {
-    return 'critical';
-  }
+  if (health < 15) { return 'critical'; }
 
-  if (health < 50) {
-    return 'normal';
-  }
+  if (health < 50) { return 'normal'; }
 
   return 'high';
 }
@@ -48,33 +44,22 @@ export function calcTileType(index, boardSize) {
   const rightColumn = index % boardSize === boardSize - 1;
 
   switch (true) {
-  case topRow && leftColumn:
-    return 'top-left';
-  case topRow && rightColumn:
-    return 'top-right';
-  case bottomRow && leftColumn:
-    return 'bottom-left';
-  case bottomRow && rightColumn:
-    return 'bottom-right';
-  case topRow && !(leftColumn || rightColumn):
-    return 'top';
-  case bottomRow && !(leftColumn || rightColumn):
-    return 'bottom';
-  case !(topRow || bottomRow) && leftColumn:
-    return 'left';
-  case !(topRow || bottomRow) && rightColumn:
-    return 'right';
-  default:
-    return 'center';
+    case topRow && leftColumn: { return 'top-left'; }
+    case topRow && rightColumn: { return 'top-right'; }
+    case bottomRow && leftColumn: { return 'bottom-left'; }
+    case bottomRow && rightColumn: { return 'bottom-right'; }
+    case topRow && !(leftColumn || rightColumn): { return 'top'; }
+    case bottomRow && !(leftColumn || rightColumn): { return 'bottom'; }
+    case !(topRow || bottomRow) && leftColumn: { return 'left'; }
+    case !(topRow || bottomRow) && rightColumn: { return 'right'; }
+    default: { return 'center'; }
   }
 }
 
 /**
- * Генерирует случайное число
+ * Генерирует случайное целое число (от 0 до {range - 1})
  *
  * @param range - диапазон чисел
- * @returns number - случайное число
+ * @returns number - случайное целое число
  */
-export function randomInt(range) {
-  return Math.floor(Math.random() * range);
-}
+export function randomInt(range) { return Math.floor(Math.random() * range); }

@@ -8,6 +8,11 @@ import characterTypes from '../characterTypes';
  * @property-read moveRange - дальность движения
  */
 export default class Bowman extends Character {
+  /**
+   * Конструктор класса Bowman
+   *
+   * @param level - уровень персонажа
+   */
   constructor(level) {
     super(1, characterTypes.bowman);
     this.attack = 25;
