@@ -21,9 +21,9 @@ install:
 
 build: off
 
-#test_script:
-#  - node --version
-#  - npm --version
+test_script:
+  - node --version
+  - npm --version
 #  - npm run lint
 #  - npm test
 #
