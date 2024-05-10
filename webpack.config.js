@@ -6,11 +6,8 @@ const production = require('./webpack.config.prod');
 
 module.exports = (env, args) => {
   switch (args.mode) {
-  case 'development':
-    return merge(common, development);
-  case 'production':
-    return merge(common, production);
-  default:
-    throw new Error('No matching configuration was found!');
+    case 'development': { return merge(common, development); }
+    case 'production': { return merge(common, production); }
+    default: { throw new Error('No matching configuration was found!'); }
   }
 };

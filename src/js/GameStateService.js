@@ -10,19 +10,9 @@ export default class GameStateService {
    *
    * @param storage - хранилище
    */
-  constructor(storage) {
-    this.storage = storage;
-  }
+  constructor(storage) { this.storage = storage; }
 
-  save(state) {
-    this.storage.setItem('state', JSON.stringify(state));
-  }
+  load() { try { return JSON.parse(this.storage.getItem('state')); } catch (e) { throw new Error('Invalid state'); } }
 
-  load() {
-    try {
-      return JSON.parse(this.storage.getItem('state'));
-    } catch (e) {
-      throw new Error('Invalid state');
-    }
-  }
+  save(state) { this.storage.setItem('state', JSON.stringify(state)); }
 }

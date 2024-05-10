@@ -8,6 +8,11 @@ import characterTypes from '../characterTypes';
  * @property-read moveRange - дальность движения
  */
 export default class Magician extends Character {
+  /**
+   * Конструктор класса Magician
+   *
+   * @param level - уровень персонажа
+   */
   constructor(level) {
     super(1, characterTypes.magician);
     this.attack = 10;

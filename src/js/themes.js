@@ -1,8 +1,5 @@
 const themes = {
-  prairie: 'prairie',
-  desert: 'desert',
-  arctic: 'arctic',
-  mountain: 'mountain',
+  arctic: 'arctic', desert: 'desert', mountain: 'mountain', prairie: 'prairie',
 };
 
 export default themes;

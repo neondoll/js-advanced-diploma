@@ -1,8 +1,5 @@
 const cursors = {
-  auto: 'auto',
-  pointer: 'pointer',
-  crosshair: 'crosshair',
-  notallowed: 'not-allowed',
+  auto: 'auto', crosshair: 'crosshair', notallowed: 'not-allowed', pointer: 'pointer',
 };
 
 export default cursors;
