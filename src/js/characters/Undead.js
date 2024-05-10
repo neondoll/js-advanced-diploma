@@ -22,10 +22,8 @@ export default class Undead extends Character {
       this.levelUp();
     }
 
-    /**
-     * `writable: false`     - запретить присвоение
-     * `configurable: false` - запретить удаление
-     */
+    // `writable: false`     - запретить присвоение
+    // `configurable: false` - запретить удаление
     Object.defineProperties(this, {
       attackRange: { value: 1, writable: false, configurable: false },
       moveRange: { value: 4, writable: false, configurable: false },

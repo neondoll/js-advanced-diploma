@@ -22,10 +22,8 @@ export default class Vampire extends Character {
       this.levelUp();
     }
 
-    /**
-     * `writable: false`     - запретить присвоение
-     * `configurable: false` - запретить удаление
-     */
+    // `writable: false`     - запретить присвоение
+    // `configurable: false` - запретить удаление
     Object.defineProperties(this, {
       attackRange: { value: 2, writable: false, configurable: false },
       moveRange: { value: 2, writable: false, configurable: false },
