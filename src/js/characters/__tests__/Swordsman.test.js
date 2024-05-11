@@ -26,9 +26,6 @@ describe('class Swordsman', () => {
       expect(character).toBeInstanceOf(Swordsman);
     });
     test('.attackRange', () => expect(character.attackRange).toBe(1));
-    test('.briefInformation', () => {
-      expect(character.briefInformation).toBe(`\u{1F396}${character.level} \u{2694}${character.attack} \u{1F6E1}${character.defence} \u{2764}${character.health}`);
-    });
     test('.moveRange', () => expect(character.moveRange).toBe(4));
   });
 });

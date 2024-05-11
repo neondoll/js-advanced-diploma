@@ -23,8 +23,8 @@ export function* characterGenerator(allowedTypes, maxLevel) {
  * @param allowedTypes - массив классов
  * @param maxLevel - максимальный возможный уровень персонажа
  * @param characterCount - количество персонажей, которое нужно сформировать
- * @returns Team - экземпляр Team, хранящий экземпляры персонажей. Количество персонажей в команде -
- * characterCount
+ * @returns Team - экземпляр Team, хранящий экземпляры персонажей. Количество персонажей в команде
+ * - characterCount
  */
 export function generateTeam(allowedTypes, maxLevel, characterCount) {
   const characters = [];
