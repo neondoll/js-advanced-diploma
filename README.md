@@ -2,6 +2,8 @@
 
 ###### tags: `netology` `advanced js`
 
+[![Deploy js-advanced-diploma to Pages](https://github.com/neondoll/js-advanced-diploma/actions/workflows/github-ci.yml/badge.svg?branch=gh-pages)](https://github.com/neondoll/js-advanced-diploma/actions/workflows/github-ci.yml)
+
 ## Предыстория
 
 Вы неплохо овладели не только продвинутыми возможностями JS, но и инфраструктурными инструментами. Вам поручили первый проект: разработать небольшую пошаговую игру.
