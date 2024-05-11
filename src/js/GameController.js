@@ -319,7 +319,7 @@ export default class GameController {
 
     this.gameState.positionedPlayerTeam.forEach((hero) => {
       hero.character.levelUp();
-      this.playerTeam.addCharacter(hero.character);
+      this.playerTeam.add(hero.character);
     });
 
     this.gameState.positionedPlayerTeam = this.constructor.positioningTeam(
