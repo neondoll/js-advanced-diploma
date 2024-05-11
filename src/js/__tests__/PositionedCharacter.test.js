@@ -13,10 +13,6 @@ describe('class PositionedCharacter', () => {
       character = new Bowman(1);
       position = 0;
     });
-    afterAll(() => {
-      character = undefined;
-      position = undefined;
-    });
 
     test('success', () => expect(new PositionedCharacter(character, position)).toEqual({ character, position }));
     describe('throw', () => {
@@ -51,7 +47,6 @@ describe('class PositionedCharacter', () => {
     let positionedCharacter;
 
     beforeAll(() => { positionedCharacter = new PositionedCharacter(new Bowman(1), 27); });
-    afterAll(() => { positionedCharacter = undefined; });
 
     test.each([
       { position: 0, expected: false },

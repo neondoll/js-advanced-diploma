@@ -2,17 +2,24 @@ import Character from '../../Character';
 import Vampire from '../Vampire';
 
 describe('class Vampire', () => {
-  test('new Vampire(1)', () => expect(new Vampire(1)).toEqual({
-    attack: 25, defence: 25, health: 50, level: 1, type: 'vampire',
-  }));
-  test('new Vampire(3)', () => expect(new Vampire(3)).toEqual({
-    attack: 57, defence: 57, health: 100, level: 3, type: 'vampire',
-  }));
+  test.each([
+    {
+      attack: 25, defence: 25, health: 50, level: 1,
+    },
+    {
+      attack: 57, defence: 57, health: 100, level: 3,
+    },
+  ])('new Vampire($level)', ({
+    attack, defence, health, level,
+  }) => {
+    expect(new Vampire(level)).toEqual({
+      attack, defence, health, level, type: 'vampire',
+    });
+  });
   describe('[Vampire]', () => {
     let character;
 
     beforeAll(() => { character = new Vampire(1); });
-    afterAll(() => { character = undefined; });
 
     test('instance of Character and Vampire', () => {
       expect(character).toBeInstanceOf(Character);

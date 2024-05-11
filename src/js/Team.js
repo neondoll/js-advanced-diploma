@@ -1,7 +1,8 @@
 /**
  * Класс для команды (набор персонажей), представляющих компьютер и игрока
  *
- * @property characters - массив персонажей
+ * @property characterSet - набор персонажей
+ * @property-read characters - массив персонажей
  *
  * @example
  * ```js
@@ -10,19 +11,49 @@
  *
  * team.characters // [swordsman, bowman]
  * ```
- * */
+ */
 export default class Team {
   /**
    * Конструктор класса Team
    *
    * @param characters - массив персонажей
    */
-  constructor(characters = []) { this.characters = characters; }
+  constructor(characters = []) { this.characterSet = new Set(characters); }
 
   /**
-   * Добавление персонажа
+   * Добавление одного персонажа
    *
    * @param character - персонаж
+   * @returns Set<Character> - набор персонажей
    */
-  addCharacter(character) { this.characters.push(character); }
+  add(character) {
+    if (this.characterSet.has(character)) {
+      throw new Error('Персонаж уже добавлен в команду!');
+    }
+
+    return this.characterSet.add(character);
+  }
+
+  /**
+   * Добавление нескольких персонажей
+   *
+   * @param characters - персонажи
+   * @returns Set<Character> - набор персонажей
+   */
+  addAll(...characters) {
+    characters.forEach((character) => {
+      if (!this.characterSet.has(character)) {
+        this.characterSet.add(character);
+      }
+    });
+
+    return this.characterSet;
+  }
+
+  /**
+   * Массив персонажей
+   *
+   * @returns Array<Character>
+   */
+  get characters() { return [...this.characterSet]; }
 }
