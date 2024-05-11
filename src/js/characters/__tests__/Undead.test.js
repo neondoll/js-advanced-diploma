@@ -2,17 +2,24 @@ import Character from '../../Character';
 import Undead from '../Undead';
 
 describe('class Undead', () => {
-  test('new Undead(1)', () => expect(new Undead(1)).toEqual({
-    attack: 40, defence: 10, health: 50, level: 1, type: 'undead',
-  }));
-  test('new Undead(3)', () => expect(new Undead(3)).toEqual({
-    attack: 93, defence: 23, health: 100, level: 3, type: 'undead',
-  }));
+  test.each([
+    {
+      attack: 40, defence: 10, health: 50, level: 1,
+    },
+    {
+      attack: 93, defence: 23, health: 100, level: 3,
+    },
+  ])('new Undead($level)', ({
+    attack, defence, health, level,
+  }) => {
+    expect(new Undead(level)).toEqual({
+      attack, defence, health, level, type: 'undead',
+    });
+  });
   describe('[Undead]', () => {
     let character;
 
     beforeAll(() => { character = new Undead(1); });
-    afterAll(() => { character = undefined; });
 
     test('instance of Character and Undead', () => {
       expect(character).toBeInstanceOf(Character);

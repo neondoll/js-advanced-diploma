@@ -2,17 +2,24 @@ import Character from '../../Character';
 import Swordsman from '../Swordsman';
 
 describe('class Swordsman', () => {
-  test('new Swordsman(1)', () => expect(new Swordsman(1)).toEqual({
-    attack: 40, defence: 10, health: 50, level: 1, type: 'swordsman',
-  }));
-  test('new Swordsman(3)', () => expect(new Swordsman(3)).toEqual({
-    attack: 93, defence: 23, health: 100, level: 3, type: 'swordsman',
-  }));
+  test.each([
+    {
+      attack: 40, defence: 10, health: 50, level: 1,
+    },
+    {
+      attack: 93, defence: 23, health: 100, level: 3,
+    },
+  ])('new Swordsman($level)', ({
+    attack, defence, health, level,
+  }) => {
+    expect(new Swordsman(level)).toEqual({
+      attack, defence, health, level, type: 'swordsman',
+    });
+  });
   describe('[Swordsman]', () => {
     let character;
 
     beforeAll(() => { character = new Swordsman(1); });
-    afterAll(() => { character = undefined; });
 
     test('instance of Character and Swordsman', () => {
       expect(character).toBeInstanceOf(Character);

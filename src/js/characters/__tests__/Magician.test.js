@@ -2,17 +2,24 @@ import Character from '../../Character';
 import Magician from '../Magician';
 
 describe('class Magician', () => {
-  test('new Magician(1)', () => expect(new Magician(1)).toEqual({
-    attack: 10, defence: 40, health: 50, level: 1, type: 'magician',
-  }));
-  test('new Magician(3)', () => expect(new Magician(3)).toEqual({
-    attack: 23, defence: 93, health: 100, level: 3, type: 'magician',
-  }));
+  test.each([
+    {
+      attack: 10, defence: 40, health: 50, level: 1,
+    },
+    {
+      attack: 23, defence: 93, health: 100, level: 3,
+    },
+  ])('new Magician($level)', ({
+    attack, defence, health, level,
+  }) => {
+    expect(new Magician(level)).toEqual({
+      attack, defence, health, level, type: 'magician',
+    });
+  });
   describe('[Magician]', () => {
     let character;
 
     beforeAll(() => { character = new Magician(1); });
-    afterAll(() => { character = undefined; });
 
     test('instance of Character and Magician', () => {
       expect(character).toBeInstanceOf(Character);

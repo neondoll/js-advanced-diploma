@@ -1,21 +1,49 @@
-import { Bowman, Magician, Swordsman } from '../characters';
 import Team from '../Team';
+import { Bowman, Magician, Swordsman } from '../characters';
 
 describe('class Team', () => {
-  describe('new Team(characters)', () => {
-    test('success', () => {
-      const characters = [new Bowman(1), new Magician(1), new Swordsman(1)];
+  test('example', () => {
+    const characters = [new Swordsman(2), new Bowman(1)];
+    const team = new Team(characters);
 
-      expect(new Team(characters)).toEqual({ characters });
+    expect(team.characters).toEqual(characters);
+  });
+  describe('new Team(characters)', () => {
+    test.each([
+      { characters: [] },
+      { characters: [new Bowman(1), new Magician(1), new Swordsman(1)] },
+    ])('characters = $characters', ({ characters }) => {
+      expect(new Team(characters)).toEqual({ characterSet: new Set(characters) });
     });
   });
   describe('[Team]', () => {
-    test('addCharacter(character)', () => {
-      const character = new Bowman(1);
-      const team = new Team();
-      team.addCharacter(character);
+    let bowman; let magician; let swordsman; let
+      team;
 
-      expect(team).toEqual({ characters: [character] });
+    beforeAll(() => {
+      bowman = new Bowman(1);
+      magician = new Magician(1);
+      swordsman = new Swordsman(1);
+    });
+    beforeEach(() => { team = new Team(); });
+
+    describe('.add(character)', () => {
+      test('success', () => expect(team.add(bowman)).toEqual(new Set([bowman])));
+      test('throw', () => {
+        team.add(bowman);
+
+        expect(() => team.add(bowman)).toThrow(Error);
+      });
+    });
+    test('.addAll(...characters)', () => {
+      expect(
+        team.addAll(bowman, magician, bowman, swordsman),
+      ).toEqual(new Set([bowman, magician, swordsman]));
+    });
+    test('.characters', () => {
+      team.addAll(bowman, magician, bowman, swordsman);
+
+      expect(team.characters).toEqual([bowman, magician, swordsman]);
     });
   });
 });
