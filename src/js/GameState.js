@@ -21,8 +21,20 @@ export default class GameState {
     this.isOver = false;
     this.isPlayer = true;
     this.level = 1;
+    this.numberOfEnemyCharactersDying = 0;
+    this.numberOfEnemyCharactersSurviving = 2;
+    this.numberOfPlayerCharactersDying = 0;
+    this.numberOfPlayerCharactersSurviving = 2;
     this.positionedEnemyTeam = [];
     this.positionedPlayerTeam = [];
+  }
+
+  /**
+   * Персонаж противника умер
+   */
+  enemyCharacterDied() {
+    this.numberOfEnemyCharactersDying += 1;
+    this.numberOfEnemyCharactersSurviving -= 1;
   }
 
   /**
@@ -62,6 +74,10 @@ export default class GameState {
     gameState.isOver = object.isOver;
     gameState.isPlayer = object.isPlayer;
     gameState.level = object.level;
+    gameState.numberOfEnemyCharactersDying = object.numberOfEnemyCharactersDying;
+    gameState.numberOfEnemyCharactersSurviving = object.numberOfEnemyCharactersSurviving;
+    gameState.numberOfPlayerCharactersDying = object.numberOfPlayerCharactersDying;
+    gameState.numberOfPlayerCharactersSurviving = object.numberOfPlayerCharactersSurviving;
     gameState.positionedEnemyTeam = object.positionedEnemyTeam.map((positionedCharacter) => {
       const character = createCharacter(positionedCharacter.character);
 
@@ -74,6 +90,14 @@ export default class GameState {
     });
 
     return gameState;
+  }
+
+  /**
+   * Персонаж игрока умер
+   */
+  playerCharacterDied() {
+    this.numberOfPlayerCharactersDying += 1;
+    this.numberOfPlayerCharactersSurviving -= 1;
   }
 
   /**

@@ -17,8 +17,10 @@ describe('class Team', () => {
     });
   });
   describe('[Team]', () => {
-    let bowman; let magician; let swordsman; let
-      team;
+    let bowman;
+    let magician;
+    let swordsman;
+    let team;
 
     beforeAll(() => {
       bowman = new Bowman(1);

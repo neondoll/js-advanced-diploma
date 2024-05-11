@@ -21,13 +21,15 @@ export default class Character {
    * @param type - тип персонажа
    */
   constructor(level, type = 'generic') {
-    this.level = level;
     this.attack = 0;
     this.defence = 0;
     this.health = 50;
+    this.level = level;
     this.type = type;
 
-    if (new.target && new.target.name === 'Character') { throw new Error('Объект класса Character не может быть создан'); }
+    if (new.target && new.target.name === 'Character') {
+      throw new Error('Объект класса Character не может быть создан');
+    }
   }
 
   /**
@@ -43,11 +45,13 @@ export default class Character {
    * Повышение уровня
    */
   levelUp() {
-    const { health } = this;
+    const { health, level } = this;
 
-    this.attack = Math.floor(Math.max(this.attack, this.attack * ((80 + health) / 100)));
-    this.defence = Math.floor(Math.max(this.defence, this.defence * ((80 + health) / 100)));
-    this.health = Math.floor(Math.min(health + 80, 100));
-    this.level = Math.min(this.level + 1, 4);
+    if (health > 0) {
+      this.attack = Math.floor(Math.max(this.attack, this.attack * ((80 + health) / 100)));
+      this.defence = Math.floor(Math.max(this.defence, this.defence * ((80 + health) / 100)));
+      this.health = Math.floor(Math.min(health + 80, 100));
+      this.level = Math.min(level + 1, 4);
+    } else { throw new Error('Нельзя повысить уровень умершего'); }
   }
 }

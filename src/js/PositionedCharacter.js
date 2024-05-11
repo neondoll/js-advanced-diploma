@@ -5,6 +5,13 @@ import Character from './Character';
  *
  * @property character - персонаж
  * @property position - координата на поле
+ *
+ * @example
+ * ```js
+ * const character = new Bowman(2);
+ * const position = 8; // для поля 8x8 лучник будет находиться слева на второй строке
+ * const positionedCharacter = new PositionedCharacter(character, position);
+ * ```
  */
 export default class PositionedCharacter {
   /**
