@@ -10,6 +10,10 @@ describe('class GameState', () => {
       expect(gameState).toHaveProperty('isOver', false);
       expect(gameState).toHaveProperty('isPlayer', true);
       expect(gameState).toHaveProperty('level', 1);
+      expect(gameState).toHaveProperty('numberOfEnemyCharactersDying', 0);
+      expect(gameState).toHaveProperty('numberOfEnemyCharactersSurviving', 2);
+      expect(gameState).toHaveProperty('numberOfPlayerCharactersDying', 0);
+      expect(gameState).toHaveProperty('numberOfPlayerCharactersSurviving', 2);
       expect(gameState).toHaveProperty('positionedEnemyTeam', []);
       expect(gameState).toHaveProperty('positionedPlayerTeam', []);
     });
@@ -20,6 +24,10 @@ describe('class GameState', () => {
         isOver: false,
         isPlayer: true,
         level: 2,
+        numberOfEnemyCharactersDying: 2,
+        numberOfEnemyCharactersSurviving: 3,
+        numberOfPlayerCharactersDying: 0,
+        numberOfPlayerCharactersSurviving: 2,
         positionedEnemyTeam: [
           {
             character: {
@@ -80,6 +88,10 @@ describe('class GameState', () => {
         isOver: false,
         isPlayer: true,
         level: 1,
+        numberOfEnemyCharactersDying: 0,
+        numberOfEnemyCharactersSurviving: 1,
+        numberOfPlayerCharactersDying: 0,
+        numberOfPlayerCharactersSurviving: 1,
         positionedEnemyTeam: [
           {
             character: {
@@ -102,6 +114,22 @@ describe('class GameState', () => {
     });
   });
   describe('[GameState]', () => {
+    let gameState;
+
+    beforeAll(() => { gameState = new GameState(); });
+
+    test('.enemyCharacterDied()', () => {
+      gameState.enemyCharacterDied();
+
+      expect(gameState).toHaveProperty('numberOfEnemyCharactersDying', 1);
+      expect(gameState).toHaveProperty('numberOfEnemyCharactersSurviving', 1);
+    });
+    test('.playerCharacterDied()', () => {
+      gameState.playerCharacterDied();
+
+      expect(gameState).toHaveProperty('numberOfPlayerCharactersDying', 1);
+      expect(gameState).toHaveProperty('numberOfPlayerCharactersSurviving', 1);
+    });
     test.each([
       { level: 0, expected: undefined },
       { level: 1, expected: 'prairie' },
@@ -110,7 +138,6 @@ describe('class GameState', () => {
       { level: 4, expected: 'mountain' },
       { level: 5, expected: undefined },
     ])('.theme($level)', ({ level, expected }) => {
-      const gameState = new GameState();
       gameState.level = level;
 
       if (expected !== undefined) {

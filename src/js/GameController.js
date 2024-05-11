@@ -2,6 +2,7 @@ import Computer from './Computer';
 import cursors from './cursors';
 import GamePlay from './GamePlay';
 import GameState from './GameState';
+import GameStateStatistic from './GameStateStatistic';
 import PositionedCharacter from './PositionedCharacter';
 import Team from './Team';
 import {
@@ -34,6 +35,7 @@ export default class GameController {
     this.stateService = stateService;
 
     this.computer = new Computer(this.gamePlay.boardSize);
+    this.stateStatistic = new GameStateStatistic(this.stateService.storage);
 
     // `writable: false`     - запретить присвоение
     // `configurable: false` - запретить удаление
@@ -113,6 +115,8 @@ export default class GameController {
 
     const isWin = this.gameState.positionedEnemyTeam.length === 0;
 
+    this.stateStatistic.add(this.gameState);
+
     setTimeout(() => { GamePlay.showMessage(isWin ? 'Вы выиграли!' : 'Вы проиграли!'); }, 100);
   }
 
@@ -156,6 +160,8 @@ export default class GameController {
 
       if (targetCharacter.character.health <= 0) {
         if (this.gameState.isPlayer) {
+          this.gameState.enemyCharacterDied();
+
           this.gameState.positionedEnemyTeam = this.gameState.positionedEnemyTeam.filter(
             (hero) => hero !== targetCharacter,
           );
@@ -177,6 +183,8 @@ export default class GameController {
             return;
           }
         } else {
+          this.gameState.playerCharacterDied();
+
           this.gameState.positionedPlayerTeam = this.gameState.positionedPlayerTeam.filter(
             (hero) => hero !== targetCharacter,
           );
@@ -239,7 +247,8 @@ export default class GameController {
   init() {
     this.gameState = new GameState();
 
-    const characterCount = 2;
+    this.stateStatistic.print();
+
     const {
       enemy: enemyInitPositions,
       player: playerInitPositions,
@@ -248,14 +257,18 @@ export default class GameController {
     this.playerTeam = generateTeam(
       this.playerCharacterClasses,
       this.gameState.level,
-      characterCount,
+      this.gameState.numberOfPlayerCharactersSurviving,
     );
     this.gameState.positionedPlayerTeam = this.constructor.positioningTeam(
       this.playerTeam,
       playerInitPositions,
     );
 
-    this.enemyTeam = generateTeam(this.enemyCharacterClasses, this.gameState.level, characterCount);
+    this.enemyTeam = generateTeam(
+      this.enemyCharacterClasses,
+      this.gameState.level,
+      this.gameState.numberOfEnemyCharactersSurviving,
+    );
     this.gameState.positionedEnemyTeam = this.constructor.positioningTeam(
       this.enemyTeam,
       enemyInitPositions,
@@ -307,9 +320,11 @@ export default class GameController {
 
     this.gameState.level += 1;
 
-    this.gamePlay.drawUi(this.gameState.theme);
-
     const characterCount = this.gameState.positionedPlayerTeam.length + 1;
+
+    this.gameState.numberOfEnemyCharactersSurviving = characterCount;
+    this.gameState.numberOfPlayerCharactersSurviving = characterCount;
+
     const {
       enemy: enemyInitPositions,
       player: playerInitPositions,
@@ -327,7 +342,11 @@ export default class GameController {
       playerInitPositions,
     );
 
-    this.enemyTeam = generateTeam(this.enemyCharacterClasses, this.gameState.level, characterCount);
+    this.enemyTeam = generateTeam(
+      this.enemyCharacterClasses,
+      this.gameState.level,
+      this.gameState.numberOfEnemyCharactersSurviving,
+    );
     this.gameState.positionedEnemyTeam = this.constructor.positioningTeam(
       this.enemyTeam,
       enemyInitPositions,
@@ -338,7 +357,9 @@ export default class GameController {
       ...this.gameState.positionedEnemyTeam,
     ];
 
+    this.gamePlay.drawUi(this.gameState.theme);
     this.gamePlay.redrawPositions(this.positionedCharacters);
+    this.gamePlay.setCursor(cursors.auto);
   }
 
   /**
@@ -382,7 +403,9 @@ export default class GameController {
    * @param index - координата на поле
    */
   onCellClick(index) {
-    if (this.gameState.isOver) { return; }
+    if (this.gameState.isOver) {
+      return;
+    }
 
     if (this.gameState.isPlayer) {
       const clickedCharacterElement = this.gamePlay.cells[index].querySelector('.character');
@@ -403,7 +426,9 @@ export default class GameController {
       }
 
       if (clickedCharacterElement && this.isPlayerCharacter(clickedCharacter)) {
-        if (this.selectedCharacter) { this.gamePlay.deselectCell(this.selectedCharacter.position); }
+        if (this.selectedCharacter) {
+          this.gamePlay.deselectCell(this.selectedCharacter.position);
+        }
 
         this.gamePlay.selectCell(index);
         this.selectedCharacter = clickedCharacter;
@@ -421,7 +446,9 @@ export default class GameController {
    * @param index - координата на поле
    */
   onCellEnter(index) {
-    if (this.gameState.isOver) { return; }
+    if (this.gameState.isOver) {
+      return;
+    }
 
     const enteredCharacterElement = this.gamePlay.cells[index].querySelector('.character');
     const enteredCharacter = this.positionedCharacters.find(
@@ -461,7 +488,9 @@ export default class GameController {
           this.gamePlay.setCursor(cursors.notallowed);
           break;
         }
-        default: { this.gamePlay.setCursor(cursors.auto); }
+        default: {
+          this.gamePlay.setCursor(cursors.auto);
+        }
       }
     }
   }
@@ -474,7 +503,9 @@ export default class GameController {
   onCellLeave(index) {
     this.gamePlay.hideCellTooltip(index);
 
-    if (!this.gamePlay.cells[index].classList.contains('selected-yellow')) { this.gamePlay.deselectCell(index); }
+    if (!this.gamePlay.cells[index].classList.contains('selected-yellow')) {
+      this.gamePlay.deselectCell(index);
+    }
   }
 
   /**
