@@ -1,10 +1,6 @@
-import Bowman from './Bowman';
-import Daemon from './Daemon';
-import Magician from './Magician';
-import Swordsman from './Swordsman';
-import Undead from './Undead';
-import Vampire from './Vampire';
-
-export {
-  Bowman, Daemon, Magician, Swordsman, Undead, Vampire,
-};
+export { default as Bowman } from './Bowman';
+export { default as Daemon } from './Daemon';
+export { default as Magician } from './Magician';
+export { default as Swordsman } from './Swordsman';
+export { default as Undead } from './Undead';
+export { default as Vampire } from './Vampire';

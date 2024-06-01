@@ -17,16 +17,26 @@ export default class GameState {
   /**
    * Конструктор класса GameState
    */
-  constructor() {
-    this.isOver = false;
-    this.isPlayer = true;
-    this.level = 1;
-    this.numberOfEnemyCharactersDying = 0;
-    this.numberOfEnemyCharactersSurviving = 2;
-    this.numberOfPlayerCharactersDying = 0;
-    this.numberOfPlayerCharactersSurviving = 2;
-    this.positionedEnemyTeam = [];
-    this.positionedPlayerTeam = [];
+  constructor(
+    isOver = false,
+    isPlayer = true,
+    level = 1,
+    numberOfEnemyCharactersDying = 0,
+    numberOfEnemyCharactersSurviving = 2,
+    numberOfPlayerCharactersDying = 0,
+    numberOfPlayerCharactersSurviving = 2,
+    positionedEnemyTeam = [],
+    positionedPlayerTeam = [],
+  ) {
+    this.isOver = isOver;
+    this.isPlayer = isPlayer;
+    this.level = level;
+    this.numberOfEnemyCharactersDying = numberOfEnemyCharactersDying;
+    this.numberOfEnemyCharactersSurviving = numberOfEnemyCharactersSurviving;
+    this.numberOfPlayerCharactersDying = numberOfPlayerCharactersDying;
+    this.numberOfPlayerCharactersSurviving = numberOfPlayerCharactersSurviving;
+    this.positionedEnemyTeam = positionedEnemyTeam;
+    this.positionedPlayerTeam = positionedPlayerTeam;
   }
 
   /**
@@ -69,27 +79,25 @@ export default class GameState {
       return character;
     };
 
-    const gameState = new GameState();
+    return new GameState(
+      object.isOver,
+      object.isPlayer,
+      object.level,
+      object.numberOfEnemyCharactersDying,
+      object.numberOfEnemyCharactersSurviving,
+      object.numberOfPlayerCharactersDying,
+      object.numberOfPlayerCharactersSurviving,
+      object.positionedEnemyTeam.map((positionedCharacter) => {
+        const character = createCharacter(positionedCharacter.character);
 
-    gameState.isOver = object.isOver;
-    gameState.isPlayer = object.isPlayer;
-    gameState.level = object.level;
-    gameState.numberOfEnemyCharactersDying = object.numberOfEnemyCharactersDying;
-    gameState.numberOfEnemyCharactersSurviving = object.numberOfEnemyCharactersSurviving;
-    gameState.numberOfPlayerCharactersDying = object.numberOfPlayerCharactersDying;
-    gameState.numberOfPlayerCharactersSurviving = object.numberOfPlayerCharactersSurviving;
-    gameState.positionedEnemyTeam = object.positionedEnemyTeam.map((positionedCharacter) => {
-      const character = createCharacter(positionedCharacter.character);
+        return new PositionedCharacter(character, positionedCharacter.position);
+      }),
+      object.positionedPlayerTeam.map((positionedCharacter) => {
+        const character = createCharacter(positionedCharacter.character);
 
-      return new PositionedCharacter(character, positionedCharacter.position);
-    });
-    gameState.positionedPlayerTeam = object.positionedPlayerTeam.map((positionedCharacter) => {
-      const character = createCharacter(positionedCharacter.character);
-
-      return new PositionedCharacter(character, positionedCharacter.position);
-    });
-
-    return gameState;
+        return new PositionedCharacter(character, positionedCharacter.position);
+      }),
+    );
   }
 
   /**
